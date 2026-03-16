@@ -52,6 +52,15 @@ func (s *Sentinel) cmdsSentinel(c *server.Peer, cmd string, args []string) {
 		}
 		return
 	}
+
+	if subCmd == "SENTINELS" {
+		err := s.sentinelsCommand(c, cmd, args)
+		if err != nil {
+			c.WriteError(err.Error())
+		}
+		return
+	}
+
 	c.WriteError(fmt.Sprintf(msgInvalidSentinelCommand, subCmd))
 }
 
@@ -116,6 +125,21 @@ func (s *Sentinel) mastersCommand(c *server.Peer, cmd string, args []string) err
 		c.WriteBulk(tag)
 		c.WriteBulk(v.Field(i).Interface().(string))
 	}
+
+	return nil
+}
+
+func (s *Sentinel) sentinelsCommand(c *server.Peer, cmd string, args []string) error {
+	if !isSentinelCmd(cmd) {
+		return fmt.Errorf(msgInvalidSentinelCommand, cmd)
+	}
+	subCmd := strings.ToUpper(args[0])
+	if subCmd != "SENTINELS" {
+		return fmt.Errorf(msgInvalidSentinelCommand, subCmd)
+	}
+
+	// For now, we don't support sentinels, so we just return an empty array
+	c.WriteLen(0)
 
 	return nil
 }

@@ -78,3 +78,17 @@ func TestGetMasterAddrByName(t *testing.T) {
 		is.Equal(results[1], m.Port())
 	}
 }
+
+func TestSentinels(t *testing.T) {
+	is := is.New(t)
+	m, s, c := testSetup(t)
+	defer m.Close()
+	defer s.Close()
+
+	// SENTINEL command with an invalid subcommand
+	{
+		results, err := redis.Strings(c.Do("SENTINEL", "SENTINELS", "MYMASTER"))
+		is.NoErr(err)
+		t.Log(results)
+	}
+}
