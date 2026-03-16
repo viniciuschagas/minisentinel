@@ -39,6 +39,7 @@ func TestNewSentinel(t *testing.T) {
 		results, err := c.Do("SENTINEL", "MASTERS")
 		is.NoErr(err)
 		info, err := redis.Strings(results.([]interface{})[0], nil)
+		is.NoErr(err)
 		t.Log("MASTERS response:")
 		t.Logf("%v", info)
 		for _, v := range info {
@@ -58,6 +59,7 @@ func TestNewSentinel(t *testing.T) {
 		results, err := c.Do("SENTINEL", "SLAVES")
 		is.NoErr(err)
 		info, err := redis.Strings(results.([]interface{})[0], nil)
+		is.NoErr(err)
 		t.Log("SLAVES response:")
 		t.Logf("%v", info)
 		for _, v := range info {

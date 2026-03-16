@@ -18,9 +18,9 @@ There are no dependencies on external binaries, so you can easily integrate it i
 
 Implemented commands:
 
-- Connection 
+- Connection
     - AUTH -- see RequireAuth()
-    - PING 
+    - PING
 - Sentinel
     - MASTERS
     - GET-MASTER-ADDR-BY-NAME
@@ -41,7 +41,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/FZambia/sentinel"
+	"github.com/FZambia/sentinel/v2"
 	"github.com/alicebob/miniredis"
 	"github.com/gomodule/redigo/redis"
 	"github.com/matryer/is"

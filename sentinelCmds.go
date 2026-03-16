@@ -11,7 +11,7 @@ import (
 const msgInvalidSentinelCommand = "ERR unknown command '%s'"
 
 func commandsSentinel(s *Sentinel) {
-	s.srv.Register("SENTINEL", s.cmdsSentinel)
+	_ = s.srv.Register("SENTINEL", s.cmdsSentinel)
 }
 
 // cmdsSentinel - entry point for all commands that start with SENTINEL
@@ -53,8 +53,6 @@ func (s *Sentinel) cmdsSentinel(c *server.Peer, cmd string, args []string) {
 		return
 	}
 	c.WriteError(fmt.Sprintf(msgInvalidSentinelCommand, subCmd))
-	return
-
 }
 
 func (s *Sentinel) getMasterAddrByNameCommand(c *server.Peer, cmd string, args []string) error {
@@ -65,7 +63,7 @@ func (s *Sentinel) getMasterAddrByNameCommand(c *server.Peer, cmd string, args [
 	if subCmd != "GET-MASTER-ADDR-BY-NAME" {
 		return fmt.Errorf(msgInvalidSentinelCommand, subCmd)
 	}
-	if strings.ToUpper(s.masterInfo.Name) != strings.ToUpper(args[1]) {
+	if !strings.EqualFold(s.masterInfo.Name, args[1]) {
 		c.WriteLen(-1)
 		return nil
 	}
@@ -123,8 +121,5 @@ func (s *Sentinel) mastersCommand(c *server.Peer, cmd string, args []string) err
 }
 
 func isSentinelCmd(cmd string) bool {
-	if strings.ToUpper(cmd) != "SENTINEL" {
-		return false
-	}
-	return true
+	return strings.ToUpper(cmd) == "SENTINEL"
 }

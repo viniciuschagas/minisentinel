@@ -3,8 +3,8 @@ package minisentinel
 import "github.com/alicebob/miniredis/v2/server"
 
 func commandsPing(s *Sentinel) {
-	s.srv.Register("PING", s.cmdPing)
-	s.srv.Register("AUTH", s.cmdAuth)
+	_ = s.srv.Register("PING", s.cmdPing)
+	_ = s.srv.Register("AUTH", s.cmdAuth)
 }
 
 // cmdPing
