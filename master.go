@@ -67,7 +67,7 @@ func NewMasterInfoFromStrings(s []string) (MasterInfo, error) {
 		return m, errors.New("[]strings not a modulus of 2")
 	}
 
-	t := reflect.TypeOf(m)
+	t := reflect.TypeFor[MasterInfo]()
 	v := reflect.ValueOf(&m)
 
 	// Iterate over all available fields and read the tag value

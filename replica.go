@@ -34,11 +34,17 @@ type ReplicaInfo struct {
 }
 
 func initReplicaInfo(s *Sentinel, opts ...Option) ReplicaInfo {
+	replica := s.master
+
 	o := GetOpts(opts...)
+	if o.replica != nil {
+		replica = o.replica
+	}
+
 	s.replicaInfo = ReplicaInfo{
 		Name:                  o.masterName,
-		IP:                    s.master.Host(),
-		Port:                  s.master.Port(),
+		IP:                    replica.Host(),
+		Port:                  replica.Port(),
 		RunID:                 uuid.New().String(),
 		Flags:                 "master",
 		LinkPendingCommands:   "0",
@@ -48,7 +54,7 @@ func initReplicaInfo(s *Sentinel, opts ...Option) ReplicaInfo {
 		LastPingReply:         "0",
 		DownAfterMilliseconds: "5000",
 		InfoRefresh:           "6295",
-		RoleReported:          "master",
+		RoleReported:          "replica",
 		RoleReportedTime:      fmt.Sprintf("%d", time.Now().Unix()),
 		MasterLinkDownTime:    "0",
 		MasterLinkStatus:      "ok",

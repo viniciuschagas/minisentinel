@@ -92,3 +92,27 @@ func TestSentinels(t *testing.T) {
 		t.Log(results)
 	}
 }
+
+func TestRole(t *testing.T) {
+	is := is.New(t)
+	m, s, c := testSetup(t)
+	defer m.Close()
+	defer s.Close()
+
+	// ROLE command
+	{
+		results, err := c.Do("ROLE")
+		is.NoErr(err)
+		resultsArr := results.([]any)
+		role, err := redis.String(resultsArr[0], nil)
+		is.NoErr(err)
+		t.Log(role)
+
+		masterName, err := redis.String(resultsArr[1].([]any)[0], nil)
+		is.NoErr(err)
+		t.Log(masterName)
+
+		is.Equal(role, "sentinel")
+		is.Equal(masterName, s.masterInfo.Name)
+	}
+}

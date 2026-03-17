@@ -38,7 +38,7 @@ func TestNewSentinel(t *testing.T) {
 		// results is an []interfaces which points to [][]strings
 		results, err := c.Do("SENTINEL", "MASTERS")
 		is.NoErr(err)
-		info, err := redis.Strings(results.([]interface{})[0], nil)
+		info, err := redis.Strings(results.([]any)[0], nil)
 		is.NoErr(err)
 		t.Log("MASTERS response:")
 		t.Logf("%v", info)
@@ -58,12 +58,40 @@ func TestNewSentinel(t *testing.T) {
 		// results is an []interfaces which points to [][]strings
 		results, err := c.Do("SENTINEL", "SLAVES")
 		is.NoErr(err)
-		info, err := redis.Strings(results.([]interface{})[0], nil)
+		info, err := redis.Strings(results.([]any)[0], nil)
 		is.NoErr(err)
 		t.Log("SLAVES response:")
 		t.Logf("%v", info)
 		for _, v := range info {
 			t.Logf("%v", v)
 		}
+	}
+
+	// SENTINELS command
+	{
+		// results is an []interfaces which points to [][]strings
+		results, err := c.Do("SENTINEL", "SENTINELS", "MYMASTER")
+		is.NoErr(err)
+		info, err := redis.Strings(results.([]any), nil)
+		is.NoErr(err)
+		t.Log("SENTINELS response:")
+		t.Logf("%v", info)
+		for _, v := range info {
+			t.Logf("%v", v)
+		}
+	}
+
+	// ROLE command
+	{
+		results, err := c.Do("ROLE")
+		is.NoErr(err)
+		resultsArr := results.([]any)
+		t.Log("ROLE response:")
+		role, err := redis.String(resultsArr[0], nil)
+		is.NoErr(err)
+		t.Log("role:", role)
+		masterName, err := redis.String(resultsArr[1].([]any)[0], nil)
+		is.NoErr(err)
+		t.Log("masterName:", masterName)
 	}
 }
